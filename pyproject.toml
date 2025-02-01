@@ -1,0 +1,17 @@
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12.3"
+scikit-learn="^1.6.1"
+pandas = "^2.2.3"
+matplotlib = "^3.10.0"
+keras = "^3.7.0"
+opencv-python = "^4.10.0.84"
+tensorflow = "^2.18.0"
+pydot = "^1.4.2" 
+graphviz = "^0.20.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
