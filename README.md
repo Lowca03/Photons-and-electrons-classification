@@ -89,7 +89,8 @@ The training process showed:
    - True Positives (Correct Photon Classification): 39,544
 
 ### ROC Curve Analysis
-![ROC Curve](https://github.com/user-attachments/assets/e59831cb-1394-4892-8b71-00e8b8c06a6d)
+![ROC Curve](https://github.com/user-attachments/assets/7ddf75f7-e2fe-49c2-8030-8a403ad9674c)
+
 
 The ROC curve demonstrates:
 - AUC of 0.7754, indicating good discrimination ability
