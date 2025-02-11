@@ -1,4 +1,5 @@
 import urllib.request
+import os
 
 class ParticleDataDownloader:
     def __init__(self):
@@ -9,4 +10,6 @@ class ParticleDataDownloader:
 
     @classmethod
     def download_file(self, url, filename):
-        urllib.request.urlretrieve(url, filename)
+        if not os.path.exists(filename):
+            urllib.request.urlretrieve(url, filename)
+

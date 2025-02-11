@@ -25,11 +25,19 @@ class ParticleDataPreprocessor:
                 X = f['X'][:]
                 y = f['y'][:]
                 self.logger.info(f"Loaded {particle_type} data: {X.shape}")
-                return X, y
+                variances = np.var(X, axis=(1, 2, 3)) # Compute variance of each image
+                mask = variances > 0.001  
+
+                X_filtered = X[mask]
+                y_filtered = y[mask]
+
+                self.logger.info(f"Loaded {particle_type} data: {X.shape} → Filtered: {X_filtered.shape}")
+
+                return X_filtered, y_filtered
         except Exception as e:
             self.logger.error(f"Error loading {particle_type} data: {e}")
             raise
-
+    
     def preprocess_data(self, electrons_path, photons_path, sample_fraction=1.0,
                        test_size=0.1, random_state=42, batch_size=32):
         """

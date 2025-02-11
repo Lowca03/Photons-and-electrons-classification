@@ -11,6 +11,11 @@ from keras.applications import EfficientNetB0
 
 import matplotlib.pyplot as plt
 
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 class ParticleClassifier:
     def __init__(self, model_type="lenet5", input_shape=(32, 32, 2)):
         self.input_shape = input_shape
@@ -19,14 +24,16 @@ class ParticleClassifier:
         self.history = None
         self.build_model()
 
+        self.logger = logging.getLogger(__name__)
+
     def build_model(self):
-        self.model = self.create_Lenet5_particle_classifier()
-        # if self.model_type.lower() == "lenet5":
-        #     self.model = self.create_Lenet5_particle_classifier()
-        # elif self.model_type.lower() == "custom":
-        #     self.model = self.create_custom_particle_classifier()
-        # else:
-        #     self.model = self.create_efficientnet_classifier()
+        logging.info(f"Building {self.model_type} model...")
+        if self.model_type.lower() == "lenet5":
+            self.model = self.create_Lenet5_particle_classifier()
+        elif self.model_type.lower() == "custom":
+            self.model = self.create_custom_particle_classifier()
+        else:
+            self.model = self.create_efficientnet_classifier()
 
 
     def create_Lenet5_particle_classifier(self, input_shape=(32, 32, 2)):
@@ -99,7 +106,7 @@ class ParticleClassifier:
                 Precision(name='precision'),
                 Recall(name='recall'),
                 AUC(name='auc'),
-                Accuracy(name='accuracy')
+                BinaryAccuracy(name='accuracy')
             ]
         )
 
@@ -185,6 +192,7 @@ class ParticleClassifier:
         return callbacks
 
     def train(self, train_dataset, validation_dataset, epochs=50, patience=10):
+        logging.info(f"Training {self.model_type} model...")
         self.history = self.model.fit(
             train_dataset,
             validation_data=validation_dataset,
@@ -194,6 +202,7 @@ class ParticleClassifier:
         )
 
     def evaluate(self, test_dataset):
+        logging.info(f"Evaluating {self.model_type} model...")
         results = self.model.evaluate(test_dataset, verbose=1)
         metrics = {name: value for name, value in zip(self.model.metrics_names, results)}
         return metrics
@@ -201,6 +210,7 @@ class ParticleClassifier:
     def plot_history(self):
         if self.history is None:
             return
+        logging.info(f"Plotting {self.model_type} model history...")
         fig, ax = plt.subplots(1, 2, figsize=(15, 5))
 
         ax[0].plot(self.history.history['loss'], label='Training Loss')
@@ -220,11 +230,14 @@ class ParticleClassifier:
 
 
     def save_model(self):
+        logging.info(f"Saving {self.model_type} model...")
         self.model.save(f'{self.model_type}.keras')
 
     def load_model(self, model_path):
+        logging.info(f"Loading {self.model_type} model...")
         self.model = tf.keras.models.load_model(model_path)
         return self.model
 
     def summary_model(self):
+        logging.info(f"Summary of {self.model_type} model...")
         self.model.summary()

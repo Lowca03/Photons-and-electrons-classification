@@ -4,13 +4,21 @@ from sklearn.metrics import confusion_matrix, roc_curve, auc
 import seaborn as sns
 import tensorflow as tf
 
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 class ParticleVisualizer:
     def __init__(self, model, class_names=['Electron', 'Photon']):
         self.model = model
         self.class_names = class_names
+        self.logger = logging.getLogger(__name__)
 
     def predict_batch(self, dataset):
         """Make predictions on a TensorFlow dataset"""
+        logging.info("Making predictions on dataset...")
+
         predictions = []
         true_labels = []
 
@@ -23,6 +31,8 @@ class ParticleVisualizer:
 
     def plot_sample_images(self, dataset, num_images=5):
         """Plot sample images with their predictions"""
+        logging.info("Plotting sample images...")
+    
         plt.figure(figsize=(15, 3))
 
         for i, (images, labels) in enumerate(dataset.take(1)):
@@ -46,6 +56,8 @@ class ParticleVisualizer:
 
     def plot_confusion_matrix(self, true_labels, predictions, threshold=0.5):
         """Plot confusion matrix"""
+        logging.info("Plotting confusion matrix...")
+
         pred_labels = (predictions >= threshold).astype(int)
         cm = confusion_matrix(true_labels, pred_labels)
 
@@ -60,6 +72,8 @@ class ParticleVisualizer:
 
     def plot_roc_curve(self, true_labels, predictions):
         """Plot ROC curve"""
+        logging.info("Plotting ROC curve...") 
+
         fpr, tpr, _ = roc_curve(true_labels, predictions)
         roc_auc = auc(fpr, tpr)
 
@@ -77,6 +91,8 @@ class ParticleVisualizer:
 
     def plot_prediction_distribution(self, predictions, true_labels):
         """Plot distribution of predictions for each class"""
+        logging.info("Plotting prediction distribution...")
+
         plt.figure(figsize=(10, 6))
 
         for i, class_name in enumerate(self.class_names):
@@ -92,6 +108,8 @@ class ParticleVisualizer:
 
     def analyze_model_performance(self, dataset):
         """Comprehensive analysis of model performance"""
+        logging.info("Analyzing model performance...")
+        
         predictions, true_labels = self.predict_batch(dataset)
 
         print("Generating visualization suite...")

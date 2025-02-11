@@ -1,5 +1,10 @@
 from components import ParticleClassifier, ParticleDataPreprocessor, ParticleVisualizer
 from data.DataDownloader import ParticleDataDownloader
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.getLogger(__name__)
+
 
 def compare_model_metrics(models_dict, test_dataset):
     results = {}
@@ -41,15 +46,48 @@ if __name__ == "__main__":
     classifier_lenet.plot_history()
 
 
-    classifier_lenet.load_model('lenet5.keras')
+    classifier_lenet.load_model('lenet.keras')
 
     visualizer_lenet = ParticleVisualizer(classifier_lenet.model)
 
-    print("\nAnalyzing LeNet-5 performance...")
+    logging.info("\nAnalyzing LeNet-5 performance...")
     pred_lenet, true_lenet = visualizer_lenet.analyze_model_performance(test_dataset)
 
+
+    # custom model initialization
+    classifier_custom = ParticleClassifier(model_type='custom_model')
+    classifier_custom.train(train_dataset, test_dataset)
+    classifier_custom.evaluate(test_dataset)
+    classifier_custom.summary_model()
+    classifier_custom.plot_history()
+
+    classifier_custom.load_model('custom.keras')
+
+    visualizer_custom = ParticleVisualizer(classifier_custom.model)
+
+    logging.info("\nAnalyzing custom model performance...")
+
+    pred_custom, true_custom = visualizer_custom.analyze_model_performance(test_dataset)
+
+    # efficientnet initialization
+    classifier_efficientnet = ParticleClassifier(model_type='efficientnet')
+    classifier_efficientnet.train(train_dataset, test_dataset)
+    classifier_efficientnet.evaluate(test_dataset)
+    classifier_efficientnet.summary_model()
+    classifier_efficientnet.plot_history()
+
+    classifier_efficientnet.load_model('efficientnet.keras')
+
+    visualizer_efficientnet = ParticleVisualizer(classifier_efficientnet.model)
+
+    logging.info("\nAnalyzing EfficientNet performance...")
+
+    pred_efficientnet, true_efficientnet = visualizer_efficientnet.analyze_model_performance(test_dataset)
+
     models = {
-        'LeNet-5': classifier_lenet
+        'LeNet-5': classifier_lenet,
+        'custom_model': classifier_custom,
+        'efficientnet': classifier_efficientnet
     }
 
     metrics_comparison = compare_model_metrics(models, test_dataset)
